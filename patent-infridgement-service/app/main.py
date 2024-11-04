@@ -1,27 +1,9 @@
 from fastapi import FastAPI
 from .models import CheckPatentRequest
-from redis import Redis
-import os
+from .services import *
 import json
 
 app = FastAPI()
-
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "my-redis-password")
-
-redis_client = Redis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    # password=REDIS_PASSWORD,
-    decode_responses=True  # Ensures responses are decoded to strings
-)
-
-def parse_json(json_str):
-    try:
-        return json.loads(json_str)
-    except:
-        return None
 
 def process_document_data(document, type):
     for key in document.keys():
@@ -34,60 +16,35 @@ def process_document_data(document, type):
     document["type"] = type
     return document
 
-def process_patent_data(patent):
-    patent["inventors"] = parse_json(patent["inventors"])
-    patent["claims"] = parse_json(patent["claims"])
-    patent["classifications"] = parse_json(patent["classifications"])
-    patent["citations"] = parse_json(patent["citations"])
-    return patent
-
-def process_company_data(company):
-    company["products"] = json.loads(company["products"])
-    return company
-
 @app.get("/")
 def read_root():
     return {"Hello": "FastAPI"}
 
 @app.get("/company")
 async def get_companies():
-    keys = redis_client.keys("*")
-
-    companies = []
-    for key in keys:
-        data = redis_client.hgetall(key)
-        if data["type"] == "company":
-            companies.append(process_company_data(data))
-
+    companies = get_companies_data()
     return {
         "companies": companies,
     }
 
 @app.get("/company/{name}")
-async def get_companies(name: str):
-    company = redis_client.hgetall(name)
+async def get_company(name: str):
+    company = get_company_data(name)
     return {
-        "company": process_company_data(company),
+        "company": company,
     }
 
 @app.get("/patent")
 async def get_patents():
-    keys = redis_client.keys("*")
-
-    patents = []
-    for key in keys:
-        data = redis_client.hgetall(key)
-        if data["type"] == "patent":
-            patents.append(process_patent_data(data))
-
+    patents = get_patents_data()
     return {
         "patents": patents,
     }
 
 @app.get("/patent/{publication_number}")
 async def get_patent(publication_number: str):
-    patent = redis_client.hgetall(publication_number)
-    return { "patent": process_patent_data(patent) }
+    patent = get_patent_data(publication_number)
+    return { "patent": patent }
 
 @app.post("/seed")
 async def seed():
