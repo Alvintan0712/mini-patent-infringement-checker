@@ -12,4 +12,3 @@ redis_client = Redis(
     # password=REDIS_PASSWORD,
     decode_responses=True  # Ensures responses are decoded to strings
 )
-

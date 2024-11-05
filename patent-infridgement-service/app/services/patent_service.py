@@ -14,7 +14,7 @@ def process_patent_data(patent):
     patent["citations"] = parse_json(patent["citations"])
     return patent
 
-def get_patents_data():
+def get_patents():
     keys = redis_client.keys("*")
 
     patents = []
@@ -25,7 +25,7 @@ def get_patents_data():
     
     return patents
 
-def get_patent_data(publication_number: str):
+def get_patent(publication_number: str):
     patent = redis_client.hgetall(publication_number)
     if len(patent) == 0:
         return None
