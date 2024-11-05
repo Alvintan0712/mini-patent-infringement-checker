@@ -17,7 +17,7 @@ def process_document_data(document, type):
     return document
 
 @app.get("/")
-def read_root():
+async def read_root():
     return { "Hello": "FastAPI" }
 
 @app.get("/company")
@@ -46,8 +46,5 @@ async def seed_handler():
     return { "status": "success", "message": "database seeded" }
 
 @app.post("/check")
-async def check_patent_infringement(check_patent_request: CheckPatentRequest):
-    return {
-        "patent_id": check_patent_request.patent_id, 
-        "company_name": check_patent_request.company_name,
-    }
+async def check_patent_infringement_handler(check_patent_request: CheckPatentRequest):
+    return check_patent_infringement(check_patent_request.patent_id, check_patent_request.company_name)
