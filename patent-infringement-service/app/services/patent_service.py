@@ -1,5 +1,7 @@
 import json
 from .redis_service import redis_client
+import torch
+from sentence_transformers import SentenceTransformer
 
 def parse_json(json_str):
     try:
@@ -32,4 +34,5 @@ def get_patent(publication_number: str):
     return process_patent_data(patent)
 
 def check_patent_infringement(patent_id: str, company_name: str):
-    pass
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("device:", device)
