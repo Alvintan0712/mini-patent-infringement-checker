@@ -42,5 +42,6 @@ def check_patent_infringement(patent_id: str, company_name: str):
     if company is None:
         return None
     
-    return get_top_2_results(patent, company)
+    # return get_results(patent, company)
+    return get_analyse_results(patent, company)
 

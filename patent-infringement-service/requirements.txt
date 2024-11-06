@@ -6,3 +6,4 @@ redis
 
 torch
 sentence-transformers
+openai
