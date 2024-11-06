@@ -17,7 +17,7 @@ This project is a mini patent infringement checker application consisting of a b
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Alvintan0712/mini-patent-infringement-checker.git
    cd mini-patent-infringement-checker
    ```
 
