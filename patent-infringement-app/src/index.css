@@ -10,6 +10,10 @@ body {
   @apply m-0 min-w-80 min-h-screen
 }
 
+bold {
+  @apply font-bold
+}
+
 button {
   @apply rounded-lg border-2 border-transparent text-base font-medium cursor-pointer px-2.5 py-2
 }
