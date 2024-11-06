@@ -1,14 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getPatents } from '../../queries/patent';
 import Autocomplete from './Autocomplete';
 import { getCompanies } from '../../queries/company';
+import LoadingButton from '../LoadingButton';
+import { checkInfringement } from '../../mutation/patent';
 
-const CheckInfringementForm = ({ handleModifyResult, onPatentChange, onCompanyChange }) => {
-  const [companyName, setCompanyName] = useState("");
-
+const CheckInfringementForm = ({ patentId, companyName, onModifyResult, onPatentChange, onCompanyChange }) => {
   const { data: patents } = useQuery({ queryKey: ["patent"], queryFn: getPatents });
   const { data: companies } = useQuery({ queryKey: ["company"], queryFn: getCompanies });
+  const { mutate, isPending } = useMutation({ mutationFn: checkInfringement });
 
   const patentOptions = patents?.map(patent => ({
     label: patent.publication_number,
@@ -29,21 +29,24 @@ const CheckInfringementForm = ({ handleModifyResult, onPatentChange, onCompanyCh
     onCompanyChange(value);
   }
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
-      const resp = await fetch("/sample-response.json");
-      const res = await resp.json();
-
-      handleModifyResult(res);
+      mutate({ patent_id: patentId, company_name: companyName }, {
+        onSuccess: (data, variables, context) => {
+          onModifyResult(data);
+        },
+        onError: () => {
+          console.log("Error checking infringement:", error);
+          onModifyResult(null);
+        }
+      });
     } catch (error) {
       console.log("Error checking infringement:", error);
-      handleModifyResult(null);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <div className="pb-4">
         <Autocomplete 
           label="Publication Number"
@@ -59,9 +62,7 @@ const CheckInfringementForm = ({ handleModifyResult, onPatentChange, onCompanyCh
         />
       </div>
       <div className="flex justify-end">
-        <button type="submit" className="bg-gray-700 hover:border-gray-200">
-          Check
-        </button>
+        <LoadingButton loading={isPending} onClick={handleSubmit} label="Check" />
       </div>
     </form>
   );
