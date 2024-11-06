@@ -22,7 +22,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <h1>Patent Infridgement Checker</h1>
+      <h1>Patent Infringement Checker</h1>
       <CheckInfringementForm
         patentId={patent?.publication_number ?? ""}
         companyName={company?.name ?? ""}
