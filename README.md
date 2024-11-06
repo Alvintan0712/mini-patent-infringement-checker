@@ -38,6 +38,11 @@ This project is a mini patent infringement checker application consisting of a b
    - The frontend app on `http://localhost:3000`
    - Redis for caching on port `6379`
 
+4. **Seed database**
+   ```sh
+   curl -X POST http://localhost:8000/seed
+   ```
+
 ## Frontend
 
 - Located in the `patent-infringement-app` directory.
