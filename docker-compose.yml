@@ -1,18 +1,19 @@
 services:
   web:
-    build: .
+    build: 
+      context: ./patent-infringement-service
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     depends_on:
       - redis
     volumes:
-      - .:/app
-      - /app/__pycache__
+      - ./patent-infringement-service:/app
+      - /patent-infringement-service/app/__pycache__
     environment:
       - ENVIRONMENT=development
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=my-redis-password
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - app-network
@@ -24,11 +25,19 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    environment:
-      - REDIS_PASSWORD=my-redis-password
     networks:
       - app-network
-    # command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+
+  frontend:
+    build: 
+      context: ./patent-infringement-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - VITE_SERVICE_HOST=http://localhost:8000
 
 volumes:
   redis_data:
