@@ -37,7 +37,7 @@ services:
     networks:
       - app-network
     environment:
-      - VITE_SERVICE_HOST=${SERVICE_HOST}:8000
+      - VITE_SERVICE_HOST=${SERVICE_HOST}
 
 volumes:
   redis_data:
