@@ -55,15 +55,14 @@ def get_results(patent, company):
         product =  products[sorted_indices[i]]
         relevant_claims_indices = get_relevant_claim_indices(similarities[sorted_indices[i]])
         infringement_likelihood = get_infringement_likelihood(similarities[sorted_indices[i]])
+        relevant_claim_texts = [claims[i]["text"] for i in relevant_claims_indices]
 
         result = {
             "product_name": product["name"],
             "description": product["description"],
             "relevant_claims": [i + 1 for i in relevant_claims_indices],
             "infringement_likelihood": infringement_likelihood,
-            "explaination": get_explaination(product, patent),
-            "specific_features": [],
-            # "similarities": similarities[sorted_indices[i]].tolist(),
+            "infringing_features": get_infringing_features(product, patent, relevant_claim_texts),
         }
 
         results.append(result)
@@ -107,7 +106,7 @@ def get_similarities(claims, products):
     claim_texts = [claim["text"] for claim in claims]
     description_texts = [product["description"] for product in products]
 
-    return get_similarities_by_sentence_transformer(claim_texts, description_texts)
+    return get_similarities_by_openai(claim_texts, description_texts)
 
 def get_similarities_sorted_indices(similarities):
     similarities_claim_max_value = torch.amax(similarities, dim=1)
