@@ -24,35 +24,35 @@ def process_document_data(document, type):
     document["type"] = type
     return document
 
-@app.get("/")
+@app.get("/v1")
 async def read_root():
     return { "Hello": "FastAPI" }
 
-@app.get("/company")
+@app.get("/v1/company")
 async def get_companies_handler():
     companies = get_companies()
     return { "companies": companies }
 
-@app.get("/company/{name}")
+@app.get("/v1/company/{name}")
 async def get_company_handler(name: str):
     company = get_company(name)
     return { "company": company }
 
-@app.get("/patent")
+@app.get("/v1/patent")
 async def get_patents_handler():
     patents = get_patents()
     return { "patents": patents }
 
-@app.get("/patent/{publication_number}")
+@app.get("/v1/patent/{publication_number}")
 async def get_patent_handler(publication_number: str):
     patent = get_patent(publication_number)
     return { "patent": patent }
 
-@app.post("/seed")
+@app.post("/v1/seed")
 async def seed_handler():
     seed()
     return { "status": "success", "message": "database seeded" }
 
-@app.post("/check")
+@app.post("/v1/check")
 async def check_patent_infringement_handler(check_patent_request: CheckPatentRequest):
     return check_patent_infringement(check_patent_request.patent_id, check_patent_request.company_name)

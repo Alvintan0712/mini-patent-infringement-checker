@@ -1,5 +1,5 @@
 export const checkInfringement = async payload => {
-  const resp = await fetch(import.meta.env.VITE_SERVICE_HOST + "/check", {
+  const resp = await fetch(import.meta.env.VITE_SERVICE_HOST + "/v1/check", {
     method: "POST",
     headers: {
       "Accept": "application/json",
